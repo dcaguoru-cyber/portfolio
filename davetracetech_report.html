@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="DaveTraceTech: A Security Architecture for Card-Fraud Prevention, Transaction Traceability and Rapid Response — an advanced technical report by David Aguoru.">
+<meta name="theme-color" content="#07111f">
+<title>DaveTraceTech: A Security Architecture for Card-Fraud Prevention — Technical Report</title>
+<style>
+:root{
+  --bg:#050b14; --bg2:#071321; --panel:#0b1727; --panel2:#0e1d31;
+  --line:rgba(125,190,255,.18); --text:#edf6ff; --muted:#9eb2c8;
+  --blue:#48a7ff; --cyan:#62e6ff; --green:#6ff0b1; --yellow:#ffd166;
+  --danger:#ff758f; --shadow:0 18px 55px rgba(0,0,0,.28); --radius:22px; --max:900px;
+}
+*{box-sizing:border-box;scroll-behavior:smooth}
+html{background:var(--bg)}
+body{
+  margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 85% 10%,rgba(72,167,255,.12),transparent 28%),
+    radial-gradient(circle at 10% 35%,rgba(98,230,255,.07),transparent 25%),
+    linear-gradient(180deg,#050b14,#07111f 50%,#050b14);
+  color:var(--text);line-height:1.75;
+}
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{width:min(calc(100% - 48px),var(--max));margin:auto}
+nav{
+  position:sticky;top:0;z-index:50;
+  backdrop-filter:blur(18px);
+  background:rgba(5,11,20,.82);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;min-height:64px;gap:20px}
+.brand{font-weight:900;letter-spacing:.03em;font-size:1.05rem}
+.brand span{color:var(--cyan)}
+.back-link{font-size:.84rem;color:var(--muted);transition:.2s}
+.back-link:hover{color:var(--text)}
+.hero{padding:80px 0 50px;text-align:center}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:.16em;
+  font-size:.72rem;font-weight:800;color:var(--cyan);margin-bottom:20px;
+}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 16px var(--green)}
+h1{font-size:clamp(1.8rem,4.5vw,2.8rem);line-height:1.15;margin:0 0 16px;letter-spacing:-.03em}
+.hero .subtitle{font-size:1.05rem;color:var(--muted);max-width:680px;margin:0 auto 28px}
+.meta-bar{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:12px 28px;
+  padding:18px 24px;border:1px solid var(--line);border-radius:14px;
+  background:linear-gradient(145deg,rgba(14,29,49,.96),rgba(7,18,32,.94));
+  max-width:680px;margin:0 auto;
+}
+.meta-bar .meta-item{font-size:.82rem;color:var(--muted)}
+.meta-bar .meta-item strong{color:var(--cyan);display:block;font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+.status-badge{
+  display:inline-block;padding:5px 12px;border-radius:999px;font-size:.72rem;font-weight:800;
+  background:rgba(111,240,177,.1);border:1px solid rgba(111,240,177,.25);color:var(--green);
+  text-transform:uppercase;letter-spacing:.06em;
+}
+section{padding:55px 0}
+.section-head{margin-bottom:28px}
+.section-head .kicker{
+  display:inline-block;text-transform:uppercase;letter-spacing:.16em;
+  font-size:.72rem;font-weight:800;color:var(--cyan);margin-bottom:10px;
+}
+.section-head h2{font-size:clamp(1.5rem,3vw,2.1rem);line-height:1.15;margin:0 0 10px;letter-spacing:-.03em}
+.section-head p{color:var(--muted);margin:0;font-size:.95rem}
+.card{
+  background:linear-gradient(145deg,rgba(14,29,49,.96),rgba(7,18,32,.94));
+  border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:28px;margin-bottom:20px;
+}
+.card h3{font-size:1.2rem;margin:0 0 12px}
+.card p{margin:0 0 14px}
+.card p:last-child{margin-bottom:0}
+.card ul,.card ol{padding-left:22px;margin:0 0 14px}
+.card li{margin-bottom:8px;color:var(--muted)}
+.card li strong{color:var(--text)}
+.muted{color:var(--muted)}
+/* Architecture diagram */
+.arch-diagram{
+  display:flex;flex-direction:column;gap:0;margin:24px 0;
+}
+.arch-layer{
+  padding:16px 20px;border:1px solid var(--line);border-radius:12px;
+  background:rgba(255,255,255,.02);text-align:center;
+  margin:0;position:relative;
+}
+.arch-layer + .arch-layer{margin-top:0;border-top-left-radius:0;border-top-right-radius:0}
+.arch-layer:not(:first-child){border-top:0}
+.arch-layer .arch-label{font-weight:800;font-size:.9rem;color:var(--text)}
+.arch-layer .arch-desc{font-size:.78rem;color:var(--muted);margin-top:4px}
+.arch-arrow{
+  text-align:center;color:var(--cyan);font-size:1.2rem;line-height:1;margin:6px 0;
+}
+/* Table */
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:.85rem}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line)}
+th{color:var(--cyan);font-weight:800;font-size:.76rem;text-transform:uppercase;letter-spacing:.06em}
+td{color:var(--muted)}
+td:first-child{color:var(--text);font-weight:600}
+tr:hover td{background:rgba(72,167,255,.03)}
+/* Pillar cards */
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:20px 0}
+.pillar{
+  padding:20px;border:1px solid var(--line);border-radius:14px;
+  background:rgba(255,255,255,.02);
+}
+.pillar .pillar-num{font-size:1.8rem;font-weight:950;color:rgba(98,230,255,.12);line-height:1;margin-bottom:8px}
+.pillar h4{font-size:1rem;margin:0 0 8px}
+.pillar p{font-size:.82rem;color:var(--muted);margin:0}
+/* Tech stack */
+.stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:18px 0}
+.stack-item{padding:14px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.02)}
+.stack-item strong{display:block;color:var(--cyan);font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.stack-item span{font-size:.84rem;color:var(--muted)}
+/* Callout */
+.callout{
+  padding:18px 22px;border-left:3px solid var(--yellow);border-radius:0 12px 12px 0;
+  background:rgba(255,209,102,.05);margin:20px 0;font-size:.86rem;
+}
+.callout strong{color:var(--yellow)}
+/* Roadmap */
+.roadmap-list{display:grid;gap:10px;margin:18px 0}
+.roadmap-item{display:flex;gap:16px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.02)}
+.roadmap-item .rm-num{font-weight:900;color:var(--cyan);font-size:.85rem;min-width:28px}
+.roadmap-item .rm-text{font-size:.86rem;color:var(--muted)}
+.roadmap-item .rm-text strong{color:var(--text)}
+/* Footer */
+footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:.82rem;text-align:center}
+.backtop{position:fixed;right:20px;bottom:20px;border:1px solid var(--line);background:#0a1929;color:var(--text);border-radius:50%;width:44px;height:44px;display:grid;place-items:center;z-index:20;cursor:pointer}
+.toc{
+  background:linear-gradient(145deg,rgba(14,29,49,.96),rgba(7,18,32,.94));
+  border:1px solid var(--line);border-radius:var(--radius);padding:24px 28px;margin-bottom:40px;
+}
+.toc h3{margin:0 0 14px;font-size:1rem}
+.toc ol{padding-left:22px;margin:0}
+.toc li{margin-bottom:6px;font-size:.86rem}
+.toc li a{color:var(--muted);transition:.2s}
+.toc li a:hover{color:var(--cyan)}
+@media(max-width:600px){
+  .container{width:min(calc(100% - 24px),var(--max))}
+  .hero{padding-top:50px}
+  section{padding:42px 0}
+  .card{padding:20px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">← <span>Back to Portfolio</span></a>
+    <a class="back-link" href="#top">Report Top</a>
+  </div>
+</nav>
+
+<main id="top">
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow"><span class="dot"></span> Advanced Technical Report</div>
+    <h1>DaveTraceTech: A Security Architecture for Card-Fraud Prevention, Transaction Traceability and Rapid Response</h1>
+    <p class="subtitle">An advanced technical report on suspicious transaction alerts, location-aware risk signals, emergency card controls and evidence-led fraud response.</p>
+    <div class="meta-bar">
+      <div class="meta-item"><strong>Author</strong>David Aguoru</div>
+      <div class="meta-item"><strong>Domain</strong>Card-Fraud Prevention</div>
+      <div class="meta-item"><strong>Year</strong>2023 — Present</div>
+      <div class="meta-item"><strong>Status</strong><span class="status-badge">Concept / Prototype Research</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ol>
+    <li><a href="#executive-summary">Executive Summary</a></li>
+    <li><a href="#problem-statement">Problem Statement</a></li>
+    <li><a href="#proposed-solution">Proposed Solution: Five-Pillar Framework</a></li>
+    <li><a href="#architecture">System Architecture</a></li>
+    <li><a href="#core-components">Core Components</a></li>
+    <li><a href="#threat-model">Threat Model</a></li>
+    <li><a href="#security-privacy">Security and Privacy Considerations</a></li>
+    <li><a href="#evidence-handling">Evidence Handling and Case Management</a></li>
+    <li><a href="#technology-stack">Proposed Technology Stack</a></li>
+    <li><a href="#limitations">Limitations and Open Challenges</a></li>
+    <li><a href="#roadmap">Future Roadmap</a></li>
+    <li><a href="#conclusion">Conclusion</a></li>
+  </ol>
+</div>
+
+<div class="callout">
+  <strong>Important disclaimer:</strong> This is a concept and prototype research report. DaveTraceTech is not a live banking integration, a production payment system, or a financial service. All functionality described is proposed or prototyped for educational and design exploration purposes. No live banking APIs, real card data, or production financial systems are used.
+</div>
+
+<!-- 1. Executive Summary -->
+<section id="executive-summary">
+  <div class="section-head">
+    <div class="kicker">01 — Executive Summary</div>
+    <h2>Executive Summary</h2>
+  </div>
+  <div class="card">
+    <p>DaveTraceTech is a cybersecurity and card-fraud prevention concept that originated in 2023 and has since evolved through academic study, prototype development, and innovation competition recognition at Kingston University. The project explores how modern banking customers could be given better tools to detect, respond to, and document card fraud in real time — before losses escalate and before evidence is lost.</p>
+    <p>The core thesis is that existing fraud-prevention systems are largely bank-side: they monitor transactions, apply risk models, and occasionally block or alert the customer after the fact. DaveTraceTech proposes a complementary, user-side framework that gives the account holder contextual awareness, immediate control, and a structured way to organise evidence — combining transaction monitoring, geolocation context, real-time alerts, emergency security controls, and evidence-led case management into a single, coherent experience.</p>
+    <p>This report presents the architecture, threat model, security considerations, and proposed technology stack for the concept. It is written for technical reviewers, placement officers, and potential collaborators who want to understand the thinking behind the project beyond what a landing page or GitHub repository can convey.</p>
+    <p>The report also demonstrates how principles from digital forensics — evidence integrity, chain of custody, structured documentation — can be applied to consumer-facing fraud response, bridging the gap between forensic methodology and everyday user experience.</p>
+  </div>
+</section>
+
+<!-- 2. Problem Statement -->
+<section id="problem-statement">
+  <div class="section-head">
+    <div class="kicker">02 — Problem Statement</div>
+    <h2>Problem Statement</h2>
+    <p>The gap DaveTraceTech targets across detection, response, and evidence.</p>
+  </div>
+  <div class="card">
+    <h3>The detection gap</h3>
+    <p>Card fraud detection today is predominantly bank-side. Financial institutions use transaction monitoring systems, behavioural analytics, and risk-scoring engines to flag suspicious activity. However, these systems often operate with a delay — by the time a user is notified, the fraudulent transaction may have already completed, funds may have moved, and the window for immediate user-side intervention has closed.</p>
+    <h3>The context gap</h3>
+    <p>When users receive a fraud alert — whether via SMS, push notification, or banking app — the alert frequently lacks the context needed for the user to make a confident decision. A transaction amount, merchant name, and timestamp are often provided, but without location context, device information, or comparison against the user's normal behaviour, the user may dismiss a genuine alert or panic over a legitimate transaction.</p>
+    <h3>The response gap</h3>
+    <p>Even when a user identifies fraudulent activity, the tools available for immediate response are limited. Most banking apps allow card freezing, but the workflow is often buried in menus. There is rarely a single, rapid action that simultaneously freezes the card, logs the incident, notifies the bank's fraud team, and begins preserving evidence.</p>
+    <h3>The evidence gap</h3>
+    <p>When fraud does occur, the user is often left to gather evidence themselves — taking screenshots of transactions, saving emails, noting timestamps, and recalling phone conversations with support. This evidence is scattered across apps, emails, and memory. There is no structured, timestamped, tamper-evident record that the user can compile and share with their bank, police, or insurance provider.</p>
+    <p>DaveTraceTech addresses all four gaps by proposing a unified, user-facing system that brings detection, context, response, and evidence into a single workflow.</p>
+  </div>
+</section>
+
+<!-- 3. Proposed Solution -->
+<section id="proposed-solution">
+  <div class="section-head">
+    <div class="kicker">03 — Proposed Solution</div>
+    <h2>Proposed Solution: Five-Pillar Framework</h2>
+    <p>DaveTraceTech is structured around five interconnected pillars that form a complete fraud-response lifecycle.</p>
+  </div>
+  <div class="pillars">
+    <div class="pillar">
+      <div class="pillar-num">01</div>
+      <h4>Suspicious Transaction Detection</h4>
+      <p>Real-time monitoring of transaction signals — amount anomalies, frequency spikes, unusual merchant categories, and deviation from established spending patterns — to flag potentially fraudulent activity.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">02</div>
+      <h4>Location and Context Comparison</h4>
+      <p>Cross-referencing transaction location with the user's known or reported location. If a transaction occurs in London while the user's device reports Manchester, the system raises a location-mismatch alert with context.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">03</div>
+      <h4>Real-Time User Alerts</h4>
+      <p>Context-rich push notifications that include the transaction details, location, merchant, and a risk assessment — enabling the user to make an informed decision rather than guessing.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">04</div>
+      <h4>Emergency Card Controls</h4>
+      <p>One-tap emergency actions: freeze card, report lost or stolen, revoke trusted devices, and escalate to the bank's fraud team — all from a single interface with no menu navigation.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">05</div>
+      <h4>Evidence and Case Organisation</h4>
+      <p>A structured case timeline that automatically logs alerts, user decisions, transaction metadata, timestamps, and supporting evidence — producing a chain-of-custody-ready record for investigation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4. System Architecture -->
+<section id="architecture">
+  <div class="section-head">
+    <div class="kicker">04 — System Architecture</div>
+    <h2>System Architecture</h2>
+    <p>The proposed architecture flows from the user application through to the evidence vault and SOC dashboard.</p>
+  </div>
+  <div class="card">
+    <p>The following diagram represents the proposed logical architecture of DaveTraceTech. Each layer has a specific responsibility in the fraud-response pipeline, from signal ingestion through to evidence preservation and administrative oversight.</p>
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="arch-label">User Application (Mobile / Web)</div>
+        <div class="arch-desc">Account holder interface — alerts, emergency controls, case timeline, fraud-awareness guidance</div>
+      </div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-layer">
+        <div class="arch-label">Transaction Signal Layer</div>
+        <div class="arch-desc">Ingests transaction events, device telemetry, and location signals from the user's device</div>
+      </div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-layer">
+        <div class="arch-label">Risk Engine</div>
+        <div class="arch-desc">Applies rule-based and anomaly-detection logic — amount thresholds, frequency analysis, location mismatch, behavioural deviation</div>
+      </div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-layer">
+        <div class="arch-label">Alert Engine</div>
+        <div class="arch-desc">Generates context-rich alerts, prioritises by risk score, and routes to user notification and verification workflow</div>
+      </div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-layer">
+        <div class="arch-label">Case Evidence Vault</div>
+        <div class="arch-desc">Timestamped, append-only log of all alerts, decisions, metadata, and user-submitted evidence — designed for forensic integrity</div>
+      </div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-layer">
+        <div class="arch-label">Admin / SOC Dashboard</div>
+        <div class="arch-desc">Authorised staff view active cases, evidence timelines, alert history, and escalate or close incidents</div>
+      </div>
+    </div>
+    <p>The architecture is intentionally modular. Each layer can be developed, tested, and iterated independently. The Case Evidence Vault is the component most closely aligned with digital forensics principles — it is designed to maintain an immutable, timestamped record of every action taken during a fraud incident, supporting later investigation and potential legal proceedings.</p>
+  </div>
+</section>
+
+<!-- 5. Core Components -->
+<section id="core-components">
+  <div class="section-head">
+    <div class="kicker">05 — Core Components</div>
+    <h2>Core Components</h2>
+    <p>Detailed breakdown of each proposed component and its role in the fraud-response pipeline.</p>
+  </div>
+  <div class="card">
+    <h3>Transaction Monitoring Concept</h3>
+    <p>The transaction monitoring component is designed to receive transaction events and evaluate them against a set of configurable rules. Proposed detection logic includes:</p>
+    <ul>
+      <li><strong>Amount threshold rules:</strong> Flag transactions exceeding a user-defined or dynamically calculated threshold based on historical spending.</li>
+      <li><strong>Frequency analysis:</strong> Detect unusual clusters of transactions within a short time window that deviate from normal behaviour.</li>
+      <li><strong>Merchant category monitoring:</strong> Flag transactions in high-risk merchant categories or merchants not previously associated with the user.</li>
+      <li><strong>Velocity checks:</strong> Identify rapid successive transactions across different merchants or geographic locations.</li>
+      <li><strong>Time-of-day analysis:</strong> Flag transactions occurring at unusual hours relative to the user's established patterns.</li>
+    </ul>
+    <p>In the prototype, these rules are simulated using mock transaction data. A production system would integrate with banking APIs or payment processor webhooks.</p>
+
+    <h3>Geolocation and Context Engine</h3>
+    <p>The context engine compares transaction location data with the user's reported device location. The proposed workflow is:</p>
+    <ol>
+      <li>The user's device periodically reports its general location (with explicit consent).</li>
+      <li>When a transaction event arrives, the system compares the transaction's merchant location with the user's last known location.</li>
+      <li>If the distance exceeds a configurable threshold (e.g., a transaction in Edinburgh while the device reports London), a location-mismatch flag is raised.</li>
+      <li>The alert includes both locations, the distance, and a risk indicator.</li>
+    </ol>
+    <p>Location data is intentionally coarse — city or region level, not precise GPS coordinates — to balance fraud-detection value with privacy minimisation.</p>
+
+    <h3>Risk Scoring Logic</h3>
+    <p>Each transaction event is assigned a composite risk score based on weighted factors:</p>
+    <ul>
+      <li><strong>Amount anomaly</strong> — how far the transaction amount deviates from the user's average.</li>
+      <li><strong>Location mismatch</strong> — distance between transaction and user device location.</li>
+      <li><strong>Frequency deviation</strong> — whether the transaction is part of an unusual cluster.</li>
+      <li><strong>Merchant familiarity</strong> — whether the merchant has been transacted with before.</li>
+      <li><strong>Time deviation</strong> — whether the transaction falls outside the user's typical active hours.</li>
+    </ul>
+    <p>The risk score drives the alert priority: low, moderate, high, or critical. High and critical alerts trigger immediate push notifications with emergency control options.</p>
+
+    <h3>Alert and Verification Flow</h3>
+    <p>When a transaction is flagged, the alert engine generates a notification containing:</p>
+    <ul>
+      <li>Transaction amount, merchant, and timestamp</li>
+      <li>Transaction location and distance from user device</li>
+      <li>Risk score and contributing factors</li>
+      <li>Two primary actions: <strong>"This was me"</strong> (dismiss) or <strong>"This was not me"</strong> (escalate)</li>
+    </ul>
+    <p>Selecting "This was not me" triggers the emergency control workflow and opens a new case in the evidence vault.</p>
+
+    <h3>Emergency Lockdown and Freeze Workflow</h3>
+    <p>The emergency control workflow is designed to execute multiple actions from a single user interaction:</p>
+    <ol>
+      <li><strong>Freeze the card</strong> — prevent further transactions (simulated in prototype).</li>
+      <li><strong>Log the incident</strong> — create a timestamped case entry in the evidence vault.</li>
+      <li><strong>Flag for bank review</strong> — queue the case for the bank's fraud team (conceptual).</li>
+      <li><strong>Preserve evidence</strong> — capture the alert context, transaction metadata, and user decision into the case timeline.</li>
+      <li><strong>Provide guidance</strong> — display next steps: contact bank, report to Action Fraud, change passwords, monitor accounts.</li>
+    </ol>
+
+    <h3>Evidence Chain and Case Timeline</h3>
+    <p>The evidence vault is designed as an append-only log — once an entry is written, it cannot be modified or deleted. Each entry includes:</p>
+    <ul>
+      <li>Timestamp (UTC, ISO 8601)</li>
+      <li>Event type (alert, user decision, card freeze, evidence upload, case note)</li>
+      <li>Transaction metadata (amount, merchant, location, reference)</li>
+      <li>User-submitted evidence (screenshots, notes, reference numbers)</li>
+      <li>Action taken and by whom</li>
+    </ul>
+    <p>This structure mirrors digital forensics chain-of-custody principles, adapted for a consumer-facing application.</p>
+
+    <h3>User Fraud-Awareness Guidance</h3>
+    <p>Beyond technical controls, DaveTraceTech proposes embedded educational content — short, contextual guidance displayed at the point of decision. For example, when a user dismisses a high-risk alert, the system could display a brief reminder of what to watch for. This turns the fraud-response experience into a learning opportunity rather than a friction point.</p>
+  </div>
+</section>
+
+<!-- 6. Threat Model -->
+<section id="threat-model">
+  <div class="section-head">
+    <div class="kicker">06 — Threat Model</div>
+    <h2>Threat Model</h2>
+    <p>Threats DaveTraceTech is designed to address, and the proposed controls for each.</p>
+  </div>
+  <div class="card">
+    <p>A security-focused system must account for the threats it is designed to mitigate and those it must defend against as a platform itself. The table below outlines the primary threats and the DaveTraceTech controls that address them.</p>
+    <table>
+      <thead>
+        <tr><th>Threat</th><th>Risk Description</th><th>DaveTraceTech Control</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Stolen or cloned card</td>
+          <td>Attacker uses stolen card details for in-person or online transactions.</td>
+          <td>Transaction monitoring + location mismatch + rapid freeze</td>
+        </tr>
+        <tr>
+          <td>Account takeover</td>
+          <td>Attacker gains access to the user's banking account and authorises transactions.</td>
+          <td>Device trust verification + anomaly detection + emergency device revocation</td>
+        </tr>
+        <tr>
+          <td>SIM-swap fraud</td>
+          <td>Attacker hijacks the user's phone number to intercept SMS authentication.</td>
+          <td>Multi-channel alerts (push + email) + device-based authentication</td>
+        </tr>
+        <tr>
+          <td>Phishing-assisted fraud</td>
+          <td>User is tricked into authorising a transaction or revealing credentials.</td>
+          <td>Contextual alerts + fraud-awareness guidance + verification prompts</td>
+        </tr>
+        <tr>
+          <td>Social engineering</td>
+          <td>Attacker manipulates the user into dismissing a legitimate alert.</td>
+          <td>Risk-score display + contextual guidance + "Are you sure?" verification on high-risk dismissals</td>
+        </tr>
+        <tr>
+          <td>False positives</td>
+          <td>Legitimate transactions are flagged, causing user fatigue and alert dismissal.</td>
+          <td>Adaptive thresholds + user feedback loop + risk-score transparency</td>
+        </tr>
+        <tr>
+          <td>Malicious insider</td>
+          <td>Authorised staff member accesses or alters case evidence.</td>
+          <td>Role-based access control + immutable audit log + access logging</td>
+        </tr>
+        <tr>
+          <td>Data leakage</td>
+          <td>Sensitive transaction or location data is exposed.</td>
+          <td>Encryption at rest and in transit + minimal data collection + no full card number storage</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Threat modelling for DaveTraceTech follows the principle that the system itself must be resilient — it is not enough to detect fraud in the user's account if the platform can be compromised, manipulated, or used to phish the user further.</p>
+  </div>
+</section>
+
+<!-- 7. Security and Privacy Considerations -->
+<section id="security-privacy">
+  <div class="section-head">
+    <div class="kicker">07 — Security and Privacy</div>
+    <h2>Security and Privacy Considerations</h2>
+    <p>Design principles that govern how DaveTraceTech would handle data, access, and compliance.</p>
+  </div>
+  <div class="card">
+    <h3>Data protection principles</h3>
+    <ul>
+      <li><strong>Encryption at rest:</strong> All stored transaction data, evidence, and case records are encrypted using industry-standard algorithms (e.g., AES-256).</li>
+      <li><strong>Encryption in transit:</strong> All communication between the user application, signal layer, and backend uses TLS 1.2 or higher.</li>
+      <li><strong>No full card number storage:</strong> DaveTraceTech never stores full card numbers. Only the last four digits and a tokenised reference are retained for display purposes.</li>
+      <li><strong>Minimal data collection:</strong> Location data is collected at city/region granularity only, with explicit user consent, and retained only for the active fraud window.</li>
+    </ul>
+    <h3>Access control</h3>
+    <ul>
+      <li><strong>Role-based access control (RBAC):</strong> Users, support staff, and administrators have distinct permission sets. Only authorised staff can access the SOC dashboard or case evidence vault.</li>
+      <li><strong>Multi-factor authentication:</strong> All administrative access requires MFA. User-side emergency actions may require biometric or PIN re-authentication.</li>
+      <li><strong>Audit logging:</strong> Every access to case evidence, every administrative action, and every system configuration change is logged with timestamp, actor, and action.</li>
+    </ul>
+    <h3>Privacy and compliance</h3>
+    <ul>
+      <li><strong>GDPR awareness:</strong> The system is designed with data-minimisation, purpose-limitation, and user-rights principles in mind. Users can view, export, and request deletion of their case data.</li>
+      <li><strong>Consent for location use:</strong> Location services require explicit opt-in. Users can disable location reporting at any time, with a clear explanation of the trade-off (reduced fraud-detection accuracy).</li>
+      <li><strong>Data retention:</strong> Case evidence is retained for a defined period (e.g., 90 days post-resolution) and then automatically purged, unless the user or legal process requires extension.</li>
+    </ul>
+    <h3>Evidence integrity</h3>
+    <ul>
+      <li><strong>Append-only evidence log:</strong> Case entries cannot be edited or deleted once written, ensuring the integrity of the evidence timeline.</li>
+      <li><strong>Cryptographic hashing:</strong> Each evidence entry is hashed, and the hash chain links consecutive entries — enabling tamper detection if any record is altered.</li>
+      <li><strong>UTC timestamping:</strong> All events use ISO 8601 UTC timestamps to avoid timezone ambiguity in cross-jurisdictional investigations.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 8. Evidence Handling -->
+<section id="evidence-handling">
+  <div class="section-head">
+    <div class="kicker">08 — Evidence Handling</div>
+    <h2>Evidence Handling and Case Management</h2>
+    <p>How DaveTraceTech applies digital forensics principles to consumer fraud response.</p>
+  </div>
+  <div class="card">
+    <p>The evidence handling component of DaveTraceTech is where the project most directly intersects with digital forensics methodology. Traditional digital forensics follows a structured process: identification, preservation, collection, examination, analysis, and reporting. DaveTraceTech adapts this process for the consumer fraud-response context.</p>
+    <h3>Case timeline structure</h3>
+    <p>Each fraud incident is represented as a case — a chronological timeline of events. A typical case might include:</p>
+    <ol>
+      <li><strong>Alert generated</strong> — Transaction flagged, risk score calculated, alert sent to user.</li>
+      <li><strong>User decision</strong> — User confirms "This was not me" and triggers emergency controls.</li>
+      <li><strong>Card frozen</strong> — Emergency freeze executed, timestamp logged.</li>
+      <li><strong>Evidence captured</strong> — Transaction metadata, alert context, and device information automatically written to the case.</li>
+      <li><strong>User adds evidence</strong> — User uploads a screenshot of a phishing email, adds a note about a suspicious phone call, or references a bank reference number.</li>
+      <li><strong>Case escalated</strong> — Case flagged for bank fraud team review (conceptual).</li>
+      <li><strong>Case resolved</strong> — Outcome recorded, case archived with full timeline preserved.</li>
+    </ol>
+    <h3>Forensic integrity measures</h3>
+    <ul>
+      <li><strong>Hash chaining:</strong> Each evidence entry includes a hash of its content and the hash of the previous entry, creating a tamper-evident chain. Any modification to a historical entry breaks the chain.</li>
+      <li><strong>Immutable storage:</strong> Once written, evidence entries are stored in an append-only data structure — they cannot be modified through the application interface.</li>
+      <li><strong>Complete audit trail:</strong> Every user action, system action, and administrative action is logged with actor identity, timestamp, and action details.</li>
+    </ul>
+    <h3>Export and sharing</h3>
+    <p>Users can export a complete case file — a structured document containing the full timeline, evidence references, and metadata — in a format suitable for sharing with their bank, Action Fraud, or legal representatives. The export includes the hash chain for integrity verification.</p>
+    <p>This approach brings professional-grade evidence handling to the consumer context, making it easier for users to present a clear, structured, and verifiable account of what happened — rather than relying on memory, scattered screenshots, and approximate timestamps.</p>
+  </div>
+</section>
+
+<!-- 9. Technology Stack -->
+<section id="technology-stack">
+  <div class="section-head">
+    <div class="kicker">09 — Technology Stack</div>
+    <h2>Proposed Technology Stack</h2>
+    <p>The suggested technologies for each layer of the architecture. This is a proposed stack, not a claim of full implementation.</p>
+  </div>
+  <div class="card">
+    <div class="stack-grid">
+      <div class="stack-item"><strong>Prototype UI</strong><span>HTML, CSS, JavaScript — deployed via GitHub Pages</span></div>
+      <div class="stack-item"><strong>Backend API</strong><span>Python with FastAPI — RESTful endpoints for signal processing and case management</span></div>
+      <div class="stack-item"><strong>Database</strong><span>PostgreSQL — relational storage for transactions, cases, and audit logs</span></div>
+      <div class="stack-item"><strong>Evidence Vault</strong><span>Append-only table with hash chaining — cryptographic integrity for case entries</span></div>
+      <div class="stack-item"><strong>Authentication</strong><span>OAuth 2.0 / OIDC with MFA — secure user and admin access</span></div>
+      <div class="stack-item"><strong>Logging</strong><span>Structured JSON logging with correlation IDs — supporting audit and investigation</span></div>
+      <div class="stack-item"><strong>Cloud Hosting</strong><span>Containerised deployment — AWS, Azure, or equivalent cloud platform</span></div>
+      <div class="stack-item"><strong>AI-Assisted Triage</strong><span>Optional NLP layer for alert summarisation and evidence classification — human-in-the-loop</span></div>
+      <div class="stack-item"><strong>Monitoring</strong><span>Application and security monitoring — alerting on system anomalies and access patterns</span></div>
+    </div>
+    <div class="callout">
+      <strong>Note:</strong> The current prototype is a front-end demonstration built with HTML, CSS, and JavaScript, deployed via GitHub Pages. The backend, database, and infrastructure components described above represent the proposed production architecture for future development.
+    </div>
+  </div>
+</section>
+
+<!-- 10. Limitations -->
+<section id="limitations">
+  <div class="section-head">
+    <div class="kicker">10 — Limitations</div>
+    <h2>Limitations and Open Challenges</h2>
+    <p>Honest assessment of what DaveTraceTech cannot yet do and the challenges it faces.</p>
+  </div>
+  <div class="card">
+    <ul>
+      <li><strong>Banking API dependency:</strong> Real-time transaction monitoring requires integration with banking or payment processor APIs. DaveTraceTech currently simulates transaction events — a production system would require partnerships and compliance with financial regulations such as PSD2.</li>
+      <li><strong>False positive management:</strong> Fraud-detection systems must balance sensitivity against user friction. Excessive false positives lead to alert fatigue; excessive false negatives leave users exposed. The risk-scoring model would require extensive tuning with real (anonymised) data.</li>
+      <li><strong>Compliance and regulatory review:</strong> Any system handling transaction data, user location, and fraud evidence must undergo legal and compliance review — including GDPR data protection impact assessment, PCI DSS considerations, and potentially FCA guidance.</li>
+      <li><strong>Authentication security:</strong> The emergency controls are only as secure as the authentication protecting them. If an attacker can compromise the user's authentication, they could use the emergency controls maliciously — or suppress legitimate alerts.</li>
+      <li><strong>Evidence legal admissibility:</strong> While the hash-chained evidence log is designed for forensic integrity, its admissibility in legal proceedings would depend on the jurisdiction, the implementation's certification, and the broader system's security posture.</li>
+      <li><strong>Scalability:</strong> Real-time transaction monitoring at scale — processing thousands of events per second across many users — presents significant engineering challenges in terms of latency, throughput, and reliability.</li>
+      <li><strong>User adoption:</strong> The system's effectiveness depends on users enabling location services, responding to alerts promptly, and engaging with the evidence features. Designing for adoption without creating security fatigue is an ongoing UX challenge.</li>
+    </ul>
+    <p>Documenting these limitations is itself a security practice — it demonstrates awareness of the system's boundaries and the work required to move from concept to production.</p>
+  </div>
+</section>
+
+<!-- 11. Future Roadmap -->
+<section id="roadmap">
+  <div class="section-head">
+    <div class="kicker">11 — Future Roadmap</div>
+    <h2>Future Roadmap</h2>
+    <p>Planned development phases for DaveTraceTech.</p>
+  </div>
+  <div class="card">
+    <div class="roadmap-list">
+      <div class="roadmap-item"><div class="rm-num">01</div><div class="rm-text"><strong>Refined prototype UI</strong> — Improve the front-end prototype with realistic mock data, interactive alert flows, and the emergency control workflow.</div></div>
+      <div class="roadmap-item"><div class="rm-num">02</div><div class="rm-text"><strong>Risk scoring demonstration</strong> — Implement a working risk-scoring demo with configurable rules and visible scoring logic.</div></div>
+      <div class="roadmap-item"><div class="rm-num">03</div><div class="rm-text"><strong>Case timeline feature</strong> — Build the interactive case timeline with hash-chained evidence entries and export functionality.</div></div>
+      <div class="roadmap-item"><div class="rm-num">04</div><div class="rm-text"><strong>API simulation</strong> — Develop a mock transaction API that generates realistic transaction events for testing the full pipeline.</div></div>
+      <div class="roadmap-item"><div class="rm-num">05</div><div class="rm-text"><strong>Backend development</strong> — Implement the Python/FastAPI backend, PostgreSQL database, and evidence vault with hash chaining.</div></div>
+      <div class="roadmap-item"><div class="rm-num">06</div><div class="rm-text"><strong>Security review</strong> — Conduct a structured security review of the prototype — threat modelling, code review, and vulnerability assessment.</div></div>
+      <div class="roadmap-item"><div class="rm-num">07</div><div class="rm-text"><strong>User testing</strong> — Test the prototype with users to evaluate alert clarity, emergency-control usability, and evidence-handling workflow.</div></div>
+      <div class="roadmap-item"><div class="rm-num">08</div><div class="rm-text"><strong>Mobile app concept</strong> — Explore a mobile-first implementation with push notifications, biometric authentication, and offline evidence caching.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12. Conclusion -->
+<section id="conclusion">
+  <div class="section-head">
+    <div class="kicker">12 — Conclusion</div>
+    <h2>Conclusion</h2>
+  </div>
+  <div class="card">
+    <p>DaveTraceTech represents a convergence of cybersecurity, digital forensics, and user-centred design. It asks a practical question: what if the tools used to investigate fraud after the fact could be placed in the hands of users during the incident itself?</p>
+    <p>The project demonstrates an architectural approach to a real-world problem — combining transaction monitoring, location context, real-time alerts, emergency controls, and forensic-grade evidence handling into a single, coherent system. While the current implementation is a prototype, the design thinking, threat modelling, and security considerations presented in this report reflect the depth of analysis that a production system would require.</p>
+    <p>DaveTraceTech also illustrates how David Aguoru's background in cyber security and digital forensics, combined with his MSc study in network and information security, informs a practical, evidence-led approach to technology building. The project is not just a concept — it is a demonstration of how security thinking can shape product design from the ground up.</p>
+    <p>The next steps are technical: refining the prototype, implementing the risk-scoring demo, building the case timeline, and conducting a formal security review. The vision remains clear — giving people better tools to detect, respond to, and document fraud, at the moment it matters most.</p>
+  </div>
+</section>
+
+</div>
+</main>
+
+<footer>
+  <div class="container">
+    <p>© 2026 David Aguoru — DaveTraceTech Technical Report. Concept / prototype research document.</p>
+    <p>Cybersecurity • Digital Forensics • Network Security • Technology</p>
+    <p style="margin-top:12px"><a href="index.html">← Back to Portfolio</a></p>
+  </div>
+</footer>
+
+<button class="backtop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+},{threshold:.08});
+</script>
+<script data-pplx-inline-edit>
+(function () {
+  if (window === window.top) return;
+
+  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://perplexity.localhost","http://localhost:1420","http://127.0.0.1:1420","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
+  const MAX_FONT_BYTES = 500 * 1024;
+  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
+  const DEFAULT_LINE_HEIGHT = 16;
+  let scrollForwarding = false;
+  let scrollRaf = 0;
+  let trustedTopOrigin = null;
+
+  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
+  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
+  // across multiple labels.
+  function matchesAllowedOrigin(origin) {
+    if (!origin) return false;
+    for (const entry of allowedParentOrigins) {
+      if (!entry.includes("*")) {
+        if (entry === origin) return true;
+        continue;
+      }
+      const pattern = new RegExp(
+        "^" +
+          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
+          "$",
+      );
+      if (pattern.test(origin)) return true;
+    }
+    return false;
+  }
+
+  // Trust decision: when the sender is same-origin-visible (event.origin is a
+  // real origin like https://www.perplexity.ai) we trust event.origin directly.
+  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
+  // broker's stamped `parentOrigin` to identify the top window. The fallback
+  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
+  // on the response path (see postToTrustedTop) to ensure replies can't be
+  // delivered to anyone but the actual top window of that claimed origin.
+  function getTrustedParentOrigin(event) {
+    const forwardedParentOrigin =
+      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
+    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
+    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
+  }
+
+  // All responses go to window.top with targetOrigin = the allowlisted origin.
+  // An attacker that iframes us inside their own null-origin broker can claim
+  // any parentOrigin they like, but the browser will drop the reply whenever
+  // the real top's origin doesn't match — so the screenshot never leaves.
+  function postToTrustedTop(message) {
+    if (!trustedTopOrigin) return;
+    try {
+      window.top.postMessage(message, trustedTopOrigin);
+    } catch (_error) {}
+  }
+
+  function inlineAll(original, clone) {
+    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
+
+    try {
+      const computedStyle = getComputedStyle(original);
+      // cssText on a computed style is the serialized declaration in modern
+      // Chromium/Safari — a single read beats enumerating ~400 longhand
+      // properties. Firefox returns "" here, so we fall back on empty.
+      const serialized = computedStyle.cssText;
+      if (serialized) {
+        clone.style.cssText = serialized;
+      } else {
+        const parts = new Array(computedStyle.length);
+        for (let index = 0; index < computedStyle.length; index += 1) {
+          const property = computedStyle[index];
+          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
+        }
+        clone.style.cssText = parts.join("");
+      }
+    } catch (_error) {}
+
+    const originalChildren = original.children;
+    const clonedChildren = clone.children;
+    for (
+      let index = 0;
+      index < originalChildren.length && index < clonedChildren.length;
+      index += 1
+    ) {
+      inlineAll(originalChildren[index], clonedChildren[index]);
+    }
+  }
+
+  function extractFontUrl(srcValue) {
+    const matches = [
+      ...srcValue.matchAll(
+        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
+      ),
+    ];
+    if (matches.length === 0) return null;
+    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
+    if (woff2) return woff2[1];
+    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
+    if (woff) return woff[1];
+    return matches[0][1];
+  }
+
+  // Cache resolved font URL -> data URI across captures. Fonts on a page
+  // essentially never change, and a batch run emits multiple captures back to
+  // back — without this we'd refetch + re-base64 every time.
+  const fontDataUriCache = new Map();
+  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
+
+  async function fetchAsDataUri(url) {
+    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
+    let dataUri = null;
+    try {
+      const response = await fetch(url, { mode: "cors", credentials: "omit" });
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size <= MAX_FONT_BYTES) {
+          dataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () =>
+              resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+          });
+        }
+      }
+    } catch (_error) {
+      dataUri = null;
+    }
+    fontDataUriCache.set(url, dataUri);
+    return dataUri;
+  }
+
+  function collectFontFaceRuleTexts() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      let cssRules;
+      try {
+        cssRules = sheet.cssRules;
+      } catch (_error) {
+        continue;
+      }
+      if (!cssRules) continue;
+      for (const rule of cssRules) {
+        const cssText = rule.cssText || "";
+        if (cssText.startsWith("@font-face")) rules.push(cssText);
+      }
+    }
+    return rules;
+  }
+
+  async function buildInlinedFontCss() {
+    const ruleTexts = collectFontFaceRuleTexts();
+    if (ruleTexts.length === 0) return null;
+
+    const resolved = ruleTexts.map((cssText) => {
+      if (!SRC_DECLARATION_RE.test(cssText)) return null;
+      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
+      if (!srcMatch) return null;
+      const url = extractFontUrl(srcMatch[1]);
+      if (!url) return null;
+      try {
+        return { cssText, url: new URL(url, document.baseURI).href };
+      } catch (_error) {
+        return null;
+      }
+    });
+
+    const dataUris = await Promise.all(
+      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
+    );
+
+    const inlined = [];
+    let totalBytes = 0;
+    for (let index = 0; index < resolved.length; index += 1) {
+      const entry = resolved[index];
+      const dataUri = dataUris[index];
+      if (!entry || !dataUri) continue;
+      const approxBytes = dataUri.length * 0.75;
+      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
+      totalBytes += approxBytes;
+      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
+    }
+    return inlined.length > 0 ? inlined.join("\n") : null;
+  }
+
+  function stripExternal(clone) {
+    const images = clone.querySelectorAll("img");
+    for (let index = 0; index < images.length; index += 1) {
+      const src = images[index].getAttribute("src");
+      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
+    }
+
+    const elements = clone.querySelectorAll("*");
+    for (let index = 0; index < elements.length; index += 1) {
+      const style = elements[index].style.cssText;
+      if (style && style.includes("url(")) {
+        elements[index].style.cssText = style.replace(
+          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
+          "none",
+        );
+      }
+    }
+  }
+
+  function emitScroll() {
+    scrollRaf = 0;
+    if (!scrollForwarding) return;
+    postToTrustedTop({
+      type: "INLINE_EDIT_SCROLL",
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollForwarding || scrollRaf) return;
+      scrollRaf = requestAnimationFrame(emitScroll);
+    },
+    { passive: true, capture: true },
+  );
+
+  async function handleCaptureRequest(event) {
+    const requestId = event.data.requestId;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function postResult(dataUrl) {
+      postToTrustedTop({
+        type: "INLINE_EDIT_SCREENSHOT_RESULT",
+        requestId,
+        dataUrl,
+        scrollX,
+        scrollY,
+      });
+    }
+
+    try {
+      // Wait for any pending web fonts to resolve so both inline metrics and
+      // the @font-face inlining below see the same loaded faces.
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_error) {}
+      }
+
+      const clone = document.documentElement.cloneNode(true);
+      inlineAll(document.documentElement, clone);
+
+      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
+      for (let index = 0; index < removedNodes.length; index += 1) {
+        removedNodes[index].remove();
+      }
+
+      stripExternal(clone);
+
+      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
+      // can resolve them — external font URLs aren't fetched during
+      // foreignObject rendering, which would otherwise force a fallback face
+      // and change text metrics.
+      const inlinedFontCss = await buildInlinedFontCss();
+      if (inlinedFontCss) {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = inlinedFontCss;
+        const head = clone.querySelector("head");
+        if (head) head.appendChild(styleEl);
+        else clone.insertBefore(styleEl, clone.firstChild);
+      }
+
+      const html = new XMLSerializer().serializeToString(clone);
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+        '<foreignObject width="100%" height="100%">' +
+        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
+        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
+        html +
+        "</div></div></foreignObject></svg>";
+      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      image.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        postResult(canvas.toDataURL("image/png"));
+      };
+      image.onerror = function () {
+        postResult(null);
+      };
+      image.src = svgUrl;
+    } catch (_error) {
+      postResult(null);
+    }
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!event.data) return;
+    // Only accept messages from the direct parent frame. Blocks sibling /
+    // unrelated-window postMessage senders that could otherwise reach us.
+    if (event.source !== window.parent) return;
+
+    const trustedParentOrigin = getTrustedParentOrigin(event);
+    if (!trustedParentOrigin) return;
+    trustedTopOrigin = trustedParentOrigin;
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
+      scrollForwarding = true;
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
+      scrollForwarding = false;
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = 0;
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_BY") {
+      const { deltaX, deltaY, deltaMode } = event.data;
+      if (!scrollForwarding || !Number.isFinite(deltaX) || !Number.isFinite(deltaY)) return;
+      if (deltaMode !== 0 && deltaMode !== 1 && deltaMode !== 2) return;
+      const lineHeight =
+        parseFloat(getComputedStyle(document.documentElement).lineHeight) || DEFAULT_LINE_HEIGHT;
+      const scaleX = deltaMode === 1 ? lineHeight : deltaMode === 2 ? window.innerWidth : 1;
+      const scaleY = deltaMode === 1 ? lineHeight : deltaMode === 2 ? window.innerHeight : 1;
+      // The selection overlay receives the wheel event instead of this iframe.
+      // Instant scrolling preserves trackpad deltas even on smooth-scroll sites.
+      window.scrollBy({ left: deltaX * scaleX, top: deltaY * scaleY, behavior: "instant" });
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
+
+    handleCaptureRequest(event);
+  });
+})();
+
+
+</script></body>
+</html>

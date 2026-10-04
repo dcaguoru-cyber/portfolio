@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="David Aguoru — Cyber Security & Digital Forensics graduate, MSc Network & Information Security student, system administrator and technology builder.">
+<meta name="theme-color" content="#07111f">
+<title>David Aguoru | Cybersecurity, Digital Forensics & Technology</title>
+<style>
+:root{
+  --bg:#050b14;
+  --bg2:#071321;
+  --panel:#0b1727;
+  --panel2:#0e1d31;
+  --line:rgba(125,190,255,.18);
+  --text:#edf6ff;
+  --muted:#9eb2c8;
+  --blue:#48a7ff;
+  --cyan:#62e6ff;
+  --green:#6ff0b1;
+  --yellow:#ffd166;
+  --danger:#ff758f;
+  --shadow:0 18px 55px rgba(0,0,0,.28);
+  --radius:22px;
+  --max:1180px;
+}
+*{box-sizing:border-box;scroll-behavior:smooth}
+html{background:var(--bg)}
+body{
+  margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 85% 10%,rgba(72,167,255,.12),transparent 28%),
+    radial-gradient(circle at 10% 35%,rgba(98,230,255,.07),transparent 25%),
+    linear-gradient(180deg,#050b14,#07111f 50%,#050b14);
+  color:var(--text);line-height:1.65;
+}
+a{color:inherit;text-decoration:none}
+.container{width:min(calc(100% - 40px),var(--max));margin:auto}
+nav{
+  position:sticky;top:0;z-index:50;
+  backdrop-filter:blur(18px);
+  background:rgba(5,11,20,.82);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;min-height:70px;gap:20px}
+.brand{font-weight:900;letter-spacing:.03em}.brand span{color:var(--cyan)}
+.nav-links{display:none}
+.nav-links a{font-size:.76rem;color:var(--muted);transition:.2s}.nav-links a:hover{color:var(--text)}
+.nav-dropdowns{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.nav-dropdown{position:relative}
+.nav-dropdown-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.04);border:1px solid var(--line);
+  color:var(--text);padding:9px 14px;border-radius:10px;
+  font-weight:800;font-size:.78rem;cursor:pointer;transition:.2s
+}
+.nav-dropdown-btn:hover{border-color:var(--cyan)}
+.nav-dropdown-btn .arrow{transition:.25s;font-size:.7rem}
+.nav-dropdown.open .nav-dropdown-btn .arrow{transform:rotate(180deg)}
+.nav-dropdown-menu{
+  display:none;position:absolute;top:calc(100% + 8px);left:0;
+  min-width:180px;
+  background:linear-gradient(145deg,rgba(14,29,49,.98),rgba(7,18,32,.98));
+  border:1px solid var(--line);border-radius:14px;
+  box-shadow:var(--shadow);padding:8px;z-index:100
+}
+.nav-dropdown.open .nav-dropdown-menu{display:block}
+.nav-dropdown-menu a{
+  display:block;padding:10px 14px;border-radius:8px;
+  font-size:.82rem;color:var(--muted);transition:.18s
+}
+.nav-dropdown-menu a:hover{color:var(--text);background:rgba(72,167,255,.07)}
+.nav-toggle{display:none;background:none;border:1px solid var(--line);border-radius:8px;color:var(--text);padding:8px 12px;cursor:pointer;font-size:1.1rem}
+.hero{padding:92px 0 70px;position:relative;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.35fr .65fr;gap:45px;align-items:center}
+.eyebrow,.kicker{
+  display:inline-flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:.16em;
+  font-size:.72rem;font-weight:800;color:var(--cyan);margin-bottom:18px
+}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 16px var(--green)}
+h1{font-size:clamp(3.4rem,8vw,6.6rem);line-height:.9;margin:0 0 25px;letter-spacing:-.07em}
+h1 .accent{color:var(--blue)}
+.hero p{max-width:760px;font-size:1.12rem;color:var(--muted)}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;padding:12px 17px;border-radius:12px;
+  border:1px solid var(--line);background:rgba(255,255,255,.035);font-weight:800;font-size:.9rem
+}
+.btn.primary{background:linear-gradient(135deg,#238be6,#53d9ff);color:#03101c;border:0}
+.btn:hover{transform:translateY(-1px)}
+.hero-card,.card,.tool-card,.timeline-item,.lab-card,.case-card,.note-card,.stat,.service,.contact-card{
+  background:linear-gradient(145deg,rgba(14,29,49,.96),rgba(7,18,32,.94));
+  border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)
+}
+.hero-card{padding:26px;position:relative}
+.avatar{
+  height:270px;border-radius:18px;border:1px solid var(--line);
+  background:
+    radial-gradient(circle at 50% 30%,rgba(98,230,255,.24),transparent 30%),
+    linear-gradient(145deg,#0d2941,#07101d);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+.avatar-mark{font-size:5.5rem;font-weight:950;letter-spacing:-.08em;color:#fff}
+.avatar-mark span{color:var(--cyan)}
+.status{display:flex;justify-content:space-between;gap:15px;padding-top:18px;font-size:.82rem}
+.status strong{color:var(--green)}
+section{padding:85px 0}
+.section-head{display:flex;justify-content:space-between;gap:30px;align-items:end;margin-bottom:30px}
+.section-head h2{font-size:clamp(2rem,4vw,3.3rem);line-height:1;margin:0;letter-spacing:-.045em}
+.section-head p{max-width:600px;color:var(--muted);margin:0}
+.grid{display:grid;gap:18px}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{padding:24px}
+.card h3,.lab-card h3,.case-card h3,.note-card h3{margin:0 0 8px;font-size:1.2rem}
+.muted{color:var(--muted)}
+.small{font-size:.84rem;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px}
+.tag{
+  border:1px solid var(--line);background:rgba(72,167,255,.06);border-radius:999px;
+  padding:5px 9px;font-size:.74rem;color:#cfe6fa
+}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:25px}
+.stat{padding:18px;text-align:center}.stat strong{display:block;font-size:1.55rem;color:var(--cyan)}.stat span{font-size:.72rem;color:var(--muted)}
+.profile-list{display:grid;gap:12px;margin-top:18px}
+.profile-row{display:flex;justify-content:space-between;gap:20px;padding:13px 0;border-bottom:1px solid var(--line)}
+.profile-row:last-child{border-bottom:0}.profile-row span{color:var(--muted)}.profile-row strong{text-align:right}
+.timeline{position:relative;margin-left:10px}.timeline:before{content:"";position:absolute;left:10px;top:0;bottom:0;width:1px;background:var(--line)}
+.timeline-item{position:relative;margin:0 0 18px 38px;padding:22px}
+.timeline-item:before{content:"";position:absolute;left:-34px;top:27px;width:10px;height:10px;border-radius:50%;background:var(--cyan);box-shadow:0 0 18px rgba(98,230,255,.65)}
+.year{font-size:.76rem;color:var(--cyan);font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.tool-card{padding:20px;min-height:160px}
+.tool-icon{font-size:1.6rem;margin-bottom:12px}
+.tool-card h3{margin:0 0 5px}
+.tool-card p{margin:0;color:var(--muted);font-size:.86rem}
+.progress{height:7px;background:#06101c;border-radius:99px;overflow:hidden;margin-top:15px;border:1px solid var(--line)}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:99px}
+.case-card{padding:25px;position:relative;overflow:hidden}
+.case-card .number{position:absolute;right:20px;top:15px;font-size:3.5rem;font-weight:950;color:rgba(98,230,255,.08)}
+.case-card h3{font-size:1.45rem}
+.case-flow{display:flex;flex-wrap:wrap;gap:8px;margin:17px 0}
+.case-flow span{padding:7px 10px;border:1px solid var(--line);border-radius:9px;font-size:.74rem;color:#cfe6fa}
+.case-flow span:not(:last-child):after{content:" →";color:var(--cyan)}
+.lab-card{padding:23px;min-height:215px}
+.lab-card h3{display:flex;justify-content:space-between;gap:15px}
+.lab-card .lab-status{font-size:.68rem;color:var(--green);border:1px solid rgba(111,240,177,.2);padding:4px 7px;border-radius:999px;white-space:nowrap}
+.note-card{padding:20px}
+.note-card .note-number{color:var(--cyan);font-weight:900;font-size:.75rem}
+.service{padding:22px}.service strong{display:block;font-size:1.05rem;margin-bottom:6px}
+.roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:0;overflow:hidden;border-radius:var(--radius);border:1px solid var(--line)}
+.roadmap .phase{padding:25px;background:rgba(255,255,255,.02);border-right:1px solid var(--line)}.roadmap .phase:last-child{border-right:0}
+.phase h3{margin:0 0 10px}.phase ul{padding-left:18px;color:var(--muted);font-size:.86rem}
+.principles{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.principle{padding:23px;border-left:2px solid var(--cyan);background:rgba(255,255,255,.025)}
+.contact{background:linear-gradient(145deg,rgba(12,31,51,.98),rgba(6,15,27,.98))}
+.contact-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:20px}
+form{display:grid;gap:12px}.input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:11px;background:#071321;color:var(--text);font:inherit}
+textarea.input{min-height:140px;resize:vertical}
+footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:.82rem}
+.reveal{opacity:0;transform:translateY(16px);transition:.65s}.reveal.visible{opacity:1;transform:none}
+.backtop{position:fixed;right:20px;bottom:20px;border:1px solid var(--line);background:#0a1929;color:var(--text);border-radius:50%;width:44px;height:44px;display:grid;place-items:center;z-index:20}
+@media(max-width:950px){
+  .hero-grid,.contact-grid,.grid-2{grid-template-columns:1fr}
+  .grid-3{grid-template-columns:repeat(2,1fr)}
+  .grid-4{grid-template-columns:repeat(2,1fr)}
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .roadmap{grid-template-columns:repeat(2,1fr)}
+  .roadmap .phase:nth-child(2){border-right:0}.roadmap .phase{border-bottom:1px solid var(--line)}
+  .principles{grid-template-columns:1fr}
+}
+@media(max-width:650px){
+  .container{width:min(calc(100% - 24px),var(--max))}
+  .nav-dropdowns{flex-direction:column;width:100%;order:2;gap:6px}
+  .nav-dropdown{width:100%}
+  .nav-dropdown-btn{width:100%;justify-content:center}
+  .nav-dropdown-menu{position:static;min-width:100%;display:none}
+  .nav-dropdown.open .nav-dropdown-menu{display:block}
+  .hero{padding-top:60px}.hero-card{order:-1}.avatar{height:210px}
+  .grid-3,.grid-4,.stats,.roadmap{grid-template-columns:1fr}
+  .roadmap .phase{border-right:0}.section-head{display:block}.section-head p{margin-top:14px}
+  section{padding:62px 0}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <a class="brand" href="#top"><img src="aguoru.png" alt="David Aguoru logo" style="height:64px;width:auto;max-width:270px;object-fit:contain;"></a>
+    <div class="nav-dropdowns">
+      <div class="nav-dropdown" data-group="about">
+        <button class="nav-dropdown-btn" onclick="toggleGroup(this)">About <span class="arrow">▼</span></button>
+        <div class="nav-dropdown-menu">
+          <a href="#about">About</a>
+          <a href="#journey">Journey</a>
+          <a href="#principles">Approach</a>
+        </div>
+      </div>
+      <div class="nav-dropdown" data-group="career">
+        <button class="nav-dropdown-btn" onclick="toggleGroup(this)">Career <span class="arrow">▼</span></button>
+        <div class="nav-dropdown-menu">
+          <a href="#experience">Experience</a>
+          <a href="#education">Education</a>
+          <a href="#achievements">Awards</a>
+        </div>
+      </div>
+      <div class="nav-dropdown" data-group="work">
+        <button class="nav-dropdown-btn" onclick="toggleGroup(this)">Work <span class="arrow">▼</span></button>
+        <div class="nav-dropdown-menu">
+          <a href="#projects">Projects</a>
+          <a href="#research">Research</a>
+          <a href="#services">Services</a>
+        </div>
+      </div>
+      <div class="nav-dropdown" data-group="development">
+        <button class="nav-dropdown-btn" onclick="toggleGroup(this)">Development <span class="arrow">▼</span></button>
+        <div class="nav-dropdown-menu">
+          <a href="#skills">Skills</a>
+          <a href="#roadmap">Roadmap</a>
+          <a href="#learning">Learning</a>
+        </div>
+      </div>
+      <div class="nav-dropdown" data-group="connect">
+        <button class="nav-dropdown-btn" onclick="toggleGroup(this)">Connect <span class="arrow">▼</span></button>
+        <div class="nav-dropdown-menu">
+          <a href="#recruiters">Recruiters</a>
+          <a href="#connect">Contact</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+<header class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow"><span class="dot"></span> Cybersecurity • Digital Forensics • Technology</div>
+      <h1>David <span class="accent">Aguoru.</span></h1>
+      <p>Cyber Security & Digital Forensics graduate, MSc Network & Information Security student, system administrator and security-focused technology builder developing practical ideas around fraud prevention, SOC workflows, digital trust and emerging technology.</p>
+      <div class="actions">
+        <a class="btn primary" href="#projects">Explore Projects →</a>
+        <a class="btn" href="https://www.linkedin.com/in/david-aguoru-a01a0b240" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a class="btn" href="https://github.com/dcaguoru-cyber" target="_blank" rel="noopener">GitHub ↗</a>
+        <a class="btn" href="David_Aguoru_CV.docx" target="_blank">Download CV ↓</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><strong>2023</strong><span>DTT idea originated</span></div>
+        <div class="stat"><strong>2024</strong><span>Bright Ideas Finalist</span></div>
+        <div class="stat"><strong>BSc</strong><span>Cyber Security & DF</span></div>
+        <div class="stat"><strong>MSc</strong><span>Network & Info Security</span></div>
+        <div class="stat"><strong>2027</strong><span>Placement target</span></div>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="avatar" aria-label="David Aguoru portfolio visual"><img src="profile.jpg" alt="Portrait of David Aguoru" style="width:100%;height:100%;object-fit:cover;border-radius:18px;"></div>
+      <div class="status"><span>Current focus</span><strong>Security + Technology</strong></div>
+      <div class="status"><span>Location</span><strong>United Kingdom</strong></div>
+    </div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="container">
+    <div class="section-head">
+      <div><div class="kicker">Profile</div><h2>Cybersecurity knowledge with an entrepreneurial edge.</h2></div>
+      <p>Combining academic security training with practical systems support, digital investigations, prototype development and business-focused technology thinking.</p>
+    </div>
+    <div class="grid grid-2">
+      <div class="card reveal">
+        <h3>About David</h3>
+        <p class="muted">David Aguoru is a UK-based Cyber Security and Digital Forensics graduate from Kingston University and current MSc Network and Information Security with Management student.</p>
+        <p class="muted">His interests sit across security operations, digital investigations, network and information security, fraud prevention, OSINT, AI-assisted security and technology entrepreneurship.</p>
+        <p class="muted">He builds and documents early-stage technology concepts, turning ideas into front-end prototypes, GitHub repositories, technical documentation and product concepts.</p>
+      </div>
+      <div class="card reveal">
+        <h3>Profile at a glance</h3>
+        <div class="profile-list">
+          <div class="profile-row"><span>Education</span><strong>Rutlish → RR6 → Kingston → MSc</strong></div>
+          <div class="profile-row"><span>Primary focus</span><strong>Cybersecurity & Digital Forensics</strong></div>
+          <div class="profile-row"><span>Builder focus</span><strong>Fraud Prevention & SOC Tools</strong></div>
+          <div class="profile-row"><span>Current study</span><strong>MSc Network & Information Security</strong></div>
+          <div class="profile-row"><span>Innovation</span><strong>2024 Bright Ideas Finalist</strong></div>
+          <div class="profile-row"><span>Development</span><strong>GitHub-hosted prototypes</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="journey">
+  <div class="container">
+    <div class="section-head">
+      <div><div class="kicker">Career Journey</div><h2>From IT foundations to security-focused building.</h2></div>
+      <p>A timeline showing how education, practical experience and entrepreneurship have developed together.</p>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item reveal"><div class="year">2016 – 2021</div><h3>Rutlish School</h3><p class="muted">GCSE Education with Computer Science and Business Studies, alongside the Computer Science Afterschool Club.</p></div>
+      <div class="timeline-item reveal"><div class="year">2021 – 2023</div><h3>RR6 — BTEC Level 3 Extended Diploma</h3><p class="muted">Business Studies • Information Technology • Applied Science. A multidisciplinary foundation combining technology, business and scientific thinking.</p></div>
+      <div class="timeline-item reveal"><div class="year">2023 — The DTT idea</div><h3>DaveTraceTech begins</h3><p class="muted">The original DaveTraceTech / Card Location Tracker idea was conceived in 2023, forming the starting point for a longer-term exploration of card-fraud prevention, transaction context and digital security.</p></div>
+      <div class="timeline-item reveal"><div class="year">2023 – 2026</div><h3>Kingston University — BSc</h3><p class="muted">Cyber Security & Digital Forensics. Key study included ethical hacking, networking, cryptography and network security, internet services and protocols, threat hunting, analysis and mitigation, and digital forensics.</p></div>
+      <div class="timeline-item reveal"><div class="year">2024</div><h3>Bright Ideas Finalist</h3><p class="muted">DaveTraceTech reached the Kingston University Bright Ideas final, marking an important step in turning the original concept into a structured innovation project.</p></div>
+      <div class="timeline-item reveal"><div class="year">Apr 2025 – Sep 2026</div><h3>System Administrator — Chivic London Limited</h3><p class="muted">Hands-on support across desktop systems, Microsoft applications, account access, printers/scanners, websites, cloud workflows and end-user troubleshooting.</p></div>
+      <div class="timeline-item reveal"><div class="year">2026 – 2028</div><h3>Kingston University — MSc</h3><p class="muted">MSc Network and Information Security with Management with Professional Placement. Current study includes Cryptography and Applications, Network and Information Security, Business in Practice, Advanced Data Communication and AI, and Project Dissertation.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="container">
+    <div class="section-head">
+      <div><div class="kicker">Technical Toolkit</div><h2>Tools, technologies & security areas.</h2></div>
+      <p>Practical tools and environments encountered through university work, technical experimentation, projects and systems support.</p>
+    </div>
+    <div class="grid grid-4">
+      <div class="tool-card reveal"><div class="tool-icon">🐧</div><h3>Linux</h3><p>Linux environments, command-line workflows and security-focused system work.</p><div class="tags"><span class="tag">Linux</span><span class="tag">Ubuntu</span></div></div>
+      <div class="tool-card reveal"><div class="tool-icon">🛡️</div><h3>Kali Linux</h3><p>Security testing and ethical-hacking environment used in cybersecurity learning and practical work.</p><div class="tags"><span class="tag">Kali</span><span class="tag">Ethical Hacking</span></div></div>
+      <div class="tool-card reveal"><div class="tool-icon">🧪</div><h3>Wireshark</h3><p>Packet capture and network traffic analysis for understanding protocols and investigating network activity.</p><div class="tags"><span class="tag">Networking</span><span class="tag">PCAP</span></div></div>
+      <div class="tool-card reveal"><div class="tool-icon">🔎</div><h3>Autopsy</h3><p>Digital forensics platform used to examine evidence and investigate artefacts in forensic workflows.</p><div class="tags"><span class="tag">Forensics</span><span class="tag">Evidence</span></div></div>
+      <div class="tool-card reveal"><div class="tool-icon">💾</div><h3>FTK Imager</h3><p>Forensic imaging and evidence-handling experience within digital investigation work.</p><div class="tags"><span class="tag">Imaging</span><span class="tag">Forensics</span></div></div>
+      <div class="tool-card reveal"><div class="tool-icon">🧬</div><h3>Hex Editor</h3><p>Low-level inspection of file and binary structures as part of digital forensics and technical analysis.</p><div class="tags"><span class="tag">Hex</span><span class="tag">Binary</span></div></div>
+      <div class="tool-card reveal"><div class="tool-icon">🐍</div><h3>Python</h3><p>Used for technical experimentation, automation, data analysis and cybersecurity project development.</p><div class="tags"><span class="tag">Python</span><span class="tag">Automation</span></div></div>
+      <div class="tool-card reveal"><div class="tool-icon">🌐</div><h3>Web Development</h3><p>HTML, CSS and JavaScript for portfolio sites, project prototypes and user-facing security concepts.</p><div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span></div></div>
+    </div>
+    <div class="card reveal" style="margin-top:18px">
+      <h3>Security & technology areas</h3>
+      <div class="tags">
+        <span class="tag">Digital Forensics</span><span class="tag">Network Security</span><span class="tag">Threat Hunting</span>
+        <span class="tag">OSINT</span><span class="tag">Incident Response</span><span class="tag">Security Awareness</span>
+        <span class="tag">Cryptography</span><span class="tag">Fraud Prevention</span><span class="tag">SOC Workflows</span>
+        <span class="tag">AI & Security</span><span class="tag">System Administration</span><span class="tag">Technical Documentation</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+   
+
+<section id="projects">
+  <div class="container">
+    <div class="section-head">
+      <div><div class="kicker">Project Case Studies</div><h2>Projects built around real security problems.</h2></div>
+      <p>Projects are presented as evolving prototypes. Proposed functionality is clearly separated from production integrations or live banking systems.</p>
+    </div>
+    <div class="grid grid-2">
+      <article class="case-card reveal">
+        <img src="dave_trace_tech_logo.png" alt="DaveTraceTech logo" style="width:100%;height:140px;object-fit:contain;border-radius:16px;margin-bottom:18px;background:#06101d;border:1px solid var(--line);padding:10px;"><div class="number">01</div><div class="kicker">2023 → Present</div>
+        <h3>DaveTraceTech</h3>
+        <p class="muted">A cybersecurity and card-fraud prevention concept originating in 2023. The project explores suspicious transaction alerts, location context, emergency security controls, fraud-awareness support and evidence organisation.</p>
+        <div class="case-flow"><span>Idea</span><span>Research</span><span>Prototype</span><span>Security Design</span><span>Future App</span></div>
+        <div class="tags"><span class="tag">Fraud Prevention</span><span class="tag">MFA</span><span class="tag">Alerts</span><span class="tag">Case Tracking</span><span class="tag">HTML/CSS/JS</span></div>
+        <div class="actions"><a class="btn primary" href="https://github.com/dcaguoru-cyber/davetracetech" target="_blank" rel="noopener">GitHub →</a><a class="btn" href="https://dcaguoru-cyber.github.io/davetracetech/" target="_blank" rel="noopener">Prototype ↗</a></div>
+      </article>
+      <article class="case-card reveal">
+        <img src="dapilot-logo.png" alt="DAPilot logo" style="width:100%;height:140px;object-fit:contain;border-radius:16px;margin-bottom:18px;background:#06101d;border:1px solid var(--line);padding:10px;"><div class="number">02</div><div class="kicker">Security Operations</div>
+        <h3>DAPilot</h3>
+        <p class="muted">An AI-assisted SOC investigation concept focused on alert triage, IOC enrichment, MITRE ATT&CK mapping and clearer investigation outputs.</p>
+        <div class="case-flow"><span>Alert</span><span>Enrichment</span><span>Analysis</span><span>Mapping</span><span>Report</span></div>
+        <div class="tags"><span class="tag">SOC</span><span class="tag">AI</span><span class="tag">Threat Intelligence</span><span class="tag">MITRE ATT&CK</span></div>
+        <div class="actions"><a class="btn primary" href="https://github.com/dcaguoru-cyber/dapilot" target="_blank" rel="noopener">GitHub →</a><a class="btn" href="https://dcaguoru-cyber.github.io/dapilot/" target="_blank" rel="noopener">Prototype ↗</a></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="roadmap">
+  <div class="container">
+    <div class="section-head">
+      <div><div class="kicker">Development Roadmap</div><h2>What is being built next.</h2></div>
+      <p>A forward-looking view of projects, study and professional development.</p>
+    </div>
+    <div class="roadmap reveal">
+      <div class="phase"><div class="year">2026</div><h3>Build</h3><ul><li>Develop cybersecurity prototypes</li><li>Expand Python work</li><li>Strengthen network-security skills</li></ul></div>
+      <div class="phase"><div class="year">2027</div><h3>Placement</h3><ul><li>Professional placement</li><li>Apply security knowledge in industry</li><li>Continue project development</li></ul></div>
+      <div class="phase"><div class="year">2027–28</div><h3>Research</h3><ul><li>MSc dissertation</li><li>Explore security/AI research</li><li>Document technical findings</li></ul></div>
+      <div class="phase"><div class="year">Long term</div><h3>Innovate</h3><ul><li>Develop technology ventures</li><li>Explore cybersecurity research</li><li>Build practical digital-security solutions</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section id="research">
+  <div class="container">
+    <div class="section-head">
+      <div><div class="kicker">Research & Technical Notes</div><h2>Learning, investigation & technical writing.</h2></div>
+      <p>Short-form technical content can document what is being learned and make the portfolio useful beyond recruitment.</p>
+    </div>
+    <div class="grid grid-3">
+      <a class="card reveal" href="davetracetech_report.html" style="display:flex;flex-direction:column;text-decoration:none;color:inherit;grid-column:span 3;border-left:3px solid var(--cyan);">
+        <div class="kicker">Featured Technical Report</div>
+        <h3 style="font-size:1.4rem;margin-top:8px">DaveTraceTech: A Security Architecture for Card-Fraud Prevention, Transaction Traceability and Rapid Response</h3>
+        <p class="muted" style="margin-top:8px">An advanced technical report covering the proposed system architecture, five-pillar fraud-prevention framework, threat model, security and privacy considerations, forensic-grade evidence handling, proposed technology stack, limitations, and future roadmap for the DaveTraceTech concept.</p>
+        <div class="tags" style="margin-top:15px"><span class="tag">Fraud Prevention</span><span class="tag">System Architecture</span><span class="tag">Threat Model</span><span class="tag">Digital Forensics</span><span class="tag">Evidence Handling</span></div>
+        <div style="margin-top:16px"><span class="btn primary">Read Full Report →</span></div>
+      </a>
+      <div class="note-card reveal"><div class="note-number">01</div><h3>Digital Forensics Methodology</h3><p class="muted">Evidence acquisition, integrity, examination, analysis, documentation and reporting.</p></div>
+      <div class="note-card reveal"><div class="note-number">02</div><h3>Network Security</h3><p class="muted">Protocols, packet analysis, network threats, segmentation and security controls.</p></div>
+      <div class="note-card reveal"><div class="note-number">03</div><h3>AI-Assisted Security</h3><p class="muted">How AI can support SOC investigation while introducing new security, trust and validation considerations.</p></div>
+      <div class="note-card reveal"><div class="note-number">04</div><h3>Fraud Prevention</h3><p class="muted">Exploring how user-facing security controls can help people identify, respond to and document suspicious activity.</p></div>
+      <div class="note-card reveal"><div class="note-number">05</div><h3>OSINT</h3><p class="muted">Ethical open-source research, source evaluation and structured investigative reporting.</p></div>
+      <div class="note-card reveal"><div class="note-number">06</div><h3>Security by Design</h3><p class="muted">Identify → Analyse → Design → Prototype → Test → Improve.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="learning">
+  <div class="container">
+    <div class="section-head">
+      <div><div class="kicker">Currently Learning</div><h2>Continuous development.</h2></div>
+      <p>Current academic and technical development alongside the MSc.</p>
+    </div>
+    <div class="grid grid-2">
+      <div class="card reveal"><h3>MSc Network & Information Security</h3><p class="muted">Current focus includes cryptography, network and information security, business in practice, advanced data communication and AI, and dissertation development.</p><div class="progress"><span style="width:45%"></span></div><div class="small" style="margin-top:8px">MSc journey — 2026–2028</div></div>
+      <div class="card reveal"><h3>Professional Development</h3><p class="muted">Building capability across Linux, security tooling, Python, cloud technologies, networking, technical documentation and practical security research.</p><div class="tags"><span class="tag">Linux</span><span class="tag">Kali</span><span class="tag">Wireshark</span><span class="tag">Python</span><span class="tag">Cloud</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="container">
+    <div class="section-head">
+      <div><div class="kicker">Professional Experience</div><h2>Hands-on IT & systems experience.</h2></div>
+      <p>Practical experience supporting users, business systems, digital operations and web services in a customer-facing technology environment.</p>
+    </div>
+    <div class="card reveal">
+      <div class="year">April 2025 – September 2026 • Part Time</div>
+      <h3>System Administrator — Chivic London Limited</h3>
+      <ul class="muted">
+        <li>Supported WhatsApp desktop, including biometric authentication, account linking, login troubleshooting and secure access.</li>
+        <li>Supported Microsoft applications and cloud-based business systems.</li>
+        <li>Set up and troubleshot printers, scanners, connectivity and document workflows.</li>
+        <li>Assisted with account access, password resets and application support.</li>
+        <li>Designed, maintained and updated company websites.</li>
+        <li>Maintained digital records and supported Microsoft Office and cloud workflows.</li>
+        <li>Diagnosed and resolved desktop software issues for end users.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="container">
+    <div class="section-head">
+      <div><div class="kicker">Education</div><h2>Academic foundation.</h2></div>
+      <p>Education combining computing, cybersecurity, digital forensics, business and information technology.</p>
+    </div>
+    <div class="grid grid-2">
+      <div class="card reveal"><div class="year">2026 – 2028 • Current</div><h3>Kingston University</h3><p><strong>MSc Network and Information Security with Management w/ Professional Placement</strong></p><p class="muted">Cryptography and Applications • Network and Information Security • Business in Practice • Advanced Data Communication and AI • Project Dissertation</p></div>
+      <div class="card reveal"><div class="year">2023 – 2026</div><h3>Kingston University</h3><p><strong>BSc Cyber Security & Digital Forensics</strong></p><p class="muted">Cyber Crime & Digital Forensics • Ethical Hacking • Networking Concepts • Cryptography and Network Security • Internet Services and Protocols • Threat Hunting, Analysis and Mitigation</p></div>
+      <div class="card reveal"><div class="year">2021 – 2023</div><h3>RR6 — Rutlish & Ricards Sixth Form</h3><p><strong>BTEC Level 3 Extended Diploma</strong></p><p class="muted">Business Studies • Information Technology • Applied Science</p></div>
+      <div class="card reveal"><div class="year">2016 – 2021</div><h3>Rutlish School</h3><p><strong>GCSE Education</strong></p><p class="muted">Including Mathematics, English, Double Science Higher, Religious Education, French, Geography, Computer Science and Business Studies.</p></div>
+    </div>
+  </div>
+</section>
+
+
+
+<section id="achievements">
+  <div class="container">
+    <div class="section-head">
+      <div><div class="kicker">Achievements</div><h2>Milestones worth highlighting.</h2></div>
+      <p>Selected milestones across education, entrepreneurship and practical technology work.</p>
+    </div>
+    <div class="grid grid-4">
+      <div class="card reveal"><h3>🏆 Bright Ideas Finalist</h3><p class="muted">2024 — Kingston University innovation competition.</p></div>
+      <div class="card reveal"><h3>🥈 Silver Achievement Award</h3><p class="muted">2019 — Silver Achievement in Religious Studies, Rutlish School.</p></div>
+      <div class="card reveal"><h3>🎓 BSc Graduate</h3><p class="muted">Cyber Security & Digital Forensics — Kingston University, 2026.</p></div>
+      <div class="card reveal"><h3>🚀 DTT Builder</h3><p class="muted">Developing the DaveTraceTech concept originating in 2023.</p></div>
+      <div class="card reveal"><h3>💻 Systems Experience</h3><p class="muted">System administration and technical support experience.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="container">
+    <div class="section-head">
+      <div><div class="kicker">Services & Capabilities</div><h2>Technology support with a security mindset.</h2></div>
+      <p>Areas aligned with David's technical experience and portfolio direction.</p>
+    </div>
+    <div class="grid grid-3">
+      <div class="service reveal"><strong>Cybersecurity Support</strong><span class="muted">Security awareness, basic security guidance and cybersecurity documentation.</span></div>
+      <div class="service reveal"><strong>Technical Documentation</strong><span class="muted">READMEs, user guides, reports, project documentation and technical content.</span></div>
+      <div class="service reveal"><strong>OSINT & Research</strong><span class="muted">Ethical open-source research, information gathering and structured findings.</span></div>
+      <div class="service reveal"><strong>Business & Technology Analysis</strong><span class="muted">Requirements, process analysis, technology research and structured recommendations.</span></div>
+      <div class="service reveal"><strong>Web Development</strong><span class="muted">Responsive websites, landing pages, updates and maintenance.</span></div>
+      <div class="service reveal"><strong>IT & Systems Support</strong><span class="muted">Desktop, software, account-access and general technical support.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="principles">
+  <div class="container">
+    <div class="section-head">
+      <div><div class="kicker">Security by Design</div><h2>How I approach security problems.</h2></div>
+      <p>Turning technical ideas into understandable, testable and documented solutions.</p>
+    </div>
+    <div class="principles">
+      <div class="principle reveal"><h3>01 — Identify</h3><p class="muted">Understand the problem, users, assets and potential threats.</p></div>
+      <div class="principle reveal"><h3>02 — Analyse</h3><p class="muted">Research risks, attack surfaces, evidence and technical constraints.</p></div>
+      <div class="principle reveal"><h3>03 — Design</h3><p class="muted">Translate findings into security controls and a practical architecture.</p></div>
+      <div class="principle reveal"><h3>04 — Prototype</h3><p class="muted">Build a tangible proof of concept that can be demonstrated and tested.</p></div>
+      <div class="principle reveal"><h3>05 — Test</h3><p class="muted">Look for weaknesses, limitations and unexpected behaviour.</p></div>
+      <div class="principle reveal"><h3>06 — Improve</h3><p class="muted">Iterate using technical evidence, feedback and lessons learned.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="recruiters">
+  <div class="container">
+    <div class="card reveal">
+      <div class="kicker">For Recruiters & Collaborators</div>
+      <h2>Open to 2027 professional placement opportunities.</h2>
+      <p class="muted">Interested in opportunities across Cybersecurity, Information Security, Technology Consulting, Business Analysis, FinTech, Technology Risk, Business Development, Security Operations and related technology roles.</p>
+      <div class="tags"><span class="tag">Cybersecurity</span><span class="tag">Information Security</span><span class="tag">Technology Consulting</span><span class="tag">Business Analysis</span><span class="tag">FinTech</span><span class="tag">Technology Risk</span><span class="tag">Business Development</span><span class="tag">Security Operations</span></div>
+      <div class="actions"><a class="btn primary" href="David_Aguoru_CV.docx" target="_blank">View CV</a><a class="btn" href="https://www.linkedin.com/in/david-aguoru-a01a0b240" target="_blank" rel="noopener">LinkedIn</a><a class="btn" href="https://github.com/dcaguoru-cyber" target="_blank" rel="noopener">GitHub</a><a class="btn" href="https://kingston.joinhandshake.com/profiles/ann5ub" target="_blank" rel="noopener">Handshake</a></div>
+    </div>
+  </div>
+</section>
+
+<section id="connect" class="contact">
+  <div class="container">
+    <div class="section-head">
+      <div><div class="kicker">Connect</div><h2>Interested in David's work?</h2></div>
+      <p>Explore the projects, follow development on GitHub, or get in touch about opportunities and collaboration.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-card card">
+        <h3>Current availability</h3>
+        <p class="muted">🟢 2027 placement opportunities</p>
+        <p class="muted">🟢 Cybersecurity / technology collaboration</p>
+        <p class="muted">🟢 Project and innovation discussions</p>
+        <p class="muted">📧 dcaguoru@gmail.com</p>
+        <div class="actions"><a class="btn" href="https://mail.google.com/mail/?view=cm&fs=1&to=dcaguoru@gmail.com" target="_blank" rel="noopener">Email David</a></div>
+      </div>
+      <div class="card">
+        <h3>Send an enquiry</h3>
+        <form id="enquiryForm" action="#" method="post">
+          <input class="input" name="Name" placeholder="Your name" required>
+          <input class="input" type="email" name="Email" placeholder="you@example.com" required>
+          <input class="input" name="Subject" placeholder="Subject" required>
+          <textarea class="input" name="Message" placeholder="Tell me about the opportunity or project..." required></textarea>
+          <button class="btn primary" type="submit">Send enquiry →</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container" style="display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap">
+    <span>© 2026 David Aguoru. Personal portfolio.</span>
+    <span>Cybersecurity • Digital Forensics • Network Security • Technology</span>
+  </div>
+</footer>
+
+<button class="backtop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Grouped dropdown navbar — only one group open at a time
+function toggleGroup(btn){
+  const dd = btn.closest('.nav-dropdown');
+  const isOpen = dd.classList.contains('open');
+  document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+  if(!isOpen) dd.classList.add('open');
+}
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(e){
+  if(!e.target.closest('.nav-dropdown')){
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+  }
+});
+// Close dropdown after clicking a link
+document.querySelectorAll('.nav-dropdown-menu a').forEach(function(link){
+  link.addEventListener('click', function(){
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+  });
+});
+
+// Enquiry form: open Gmail compose with form data pre-filled
+document.getElementById('enquiryForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const name = encodeURIComponent(this.Name.value);
+  const email = encodeURIComponent(this.Email.value);
+  const subject = encodeURIComponent(this.Subject.value);
+  const body = encodeURIComponent(
+    'Name: ' + decodeURIComponent(name) + '\n' +
+    'Email: ' + decodeURIComponent(email) + '\n\n' +
+    decodeURIComponent(encodeURIComponent(this.Message.value))
+  );
+  const gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1&to=dcaguoru@gmail.com' +
+    '&su=' + subject + '&body=' + body;
+  window.open(gmailUrl, '_blank', 'noopener');
+});
+
+function openTool(type){
+  if(type === 'password'){
+    const p = prompt('Enter a test password. It stays in your browser and is not submitted.');
+    if(p === null) return;
+    let score = 0;
+    if(p.length >= 8) score++;
+    if(p.length >= 12) score++;
+    if(/[A-Z]/.test(p)) score++;
+    if(/[a-z]/.test(p)) score++;
+    if(/[0-9]/.test(p)) score++;
+    if(/[^A-Za-z0-9]/.test(p)) score++;
+    const result = score >= 5 ? 'Strong' : score >= 3 ? 'Moderate' : 'Weak';
+    alert('Password strength: ' + result + '\\n\\nThis is a simple educational demonstration, not a password-security service.');
+  } else if(type === 'hash'){
+    alert('Hash demonstrator concept: cryptographic hashes help verify whether data has changed. A production implementation would use the Web Crypto API so the calculation happens locally in the browser.');
+  } else {
+    const answer = confirm('Scenario: An email claims your account will be closed today and asks you to click a link and confirm your password.\\n\\nWould you treat this as suspicious?');
+    alert(answer ? 'Correct approach: investigate the sender, link, urgency and request for credentials before taking action.' : 'Think again: urgency plus a request for credentials and an unexpected link are strong warning signs.');
+  }
+}
+</script>
+<script data-pplx-inline-edit>
+(function () {
+  if (window === window.top) return;
+
+  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://perplexity.localhost","http://localhost:1420","http://127.0.0.1:1420","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
+  const MAX_FONT_BYTES = 500 * 1024;
+  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
+  const DEFAULT_LINE_HEIGHT = 16;
+  let scrollForwarding = false;
+  let scrollRaf = 0;
+  let trustedTopOrigin = null;
+
+  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
+  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
+  // across multiple labels.
+  function matchesAllowedOrigin(origin) {
+    if (!origin) return false;
+    for (const entry of allowedParentOrigins) {
+      if (!entry.includes("*")) {
+        if (entry === origin) return true;
+        continue;
+      }
+      const pattern = new RegExp(
+        "^" +
+          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
+          "$",
+      );
+      if (pattern.test(origin)) return true;
+    }
+    return false;
+  }
+
+  // Trust decision: when the sender is same-origin-visible (event.origin is a
+  // real origin like https://www.perplexity.ai) we trust event.origin directly.
+  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
+  // broker's stamped `parentOrigin` to identify the top window. The fallback
+  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
+  // on the response path (see postToTrustedTop) to ensure replies can't be
+  // delivered to anyone but the actual top window of that claimed origin.
+  function getTrustedParentOrigin(event) {
+    const forwardedParentOrigin =
+      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
+    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
+    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
+  }
+
+  // All responses go to window.top with targetOrigin = the allowlisted origin.
+  // An attacker that iframes us inside their own null-origin broker can claim
+  // any parentOrigin they like, but the browser will drop the reply whenever
+  // the real top's origin doesn't match — so the screenshot never leaves.
+  function postToTrustedTop(message) {
+    if (!trustedTopOrigin) return;
+    try {
+      window.top.postMessage(message, trustedTopOrigin);
+    } catch (_error) {}
+  }
+
+  function inlineAll(original, clone) {
+    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
+
+    try {
+      const computedStyle = getComputedStyle(original);
+      // cssText on a computed style is the serialized declaration in modern
+      // Chromium/Safari — a single read beats enumerating ~400 longhand
+      // properties. Firefox returns "" here, so we fall back on empty.
+      const serialized = computedStyle.cssText;
+      if (serialized) {
+        clone.style.cssText = serialized;
+      } else {
+        const parts = new Array(computedStyle.length);
+        for (let index = 0; index < computedStyle.length; index += 1) {
+          const property = computedStyle[index];
+          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
+        }
+        clone.style.cssText = parts.join("");
+      }
+    } catch (_error) {}
+
+    const originalChildren = original.children;
+    const clonedChildren = clone.children;
+    for (
+      let index = 0;
+      index < originalChildren.length && index < clonedChildren.length;
+      index += 1
+    ) {
+      inlineAll(originalChildren[index], clonedChildren[index]);
+    }
+  }
+
+  function extractFontUrl(srcValue) {
+    const matches = [
+      ...srcValue.matchAll(
+        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
+      ),
+    ];
+    if (matches.length === 0) return null;
+    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
+    if (woff2) return woff2[1];
+    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
+    if (woff) return woff[1];
+    return matches[0][1];
+  }
+
+  // Cache resolved font URL -> data URI across captures. Fonts on a page
+  // essentially never change, and a batch run emits multiple captures back to
+  // back — without this we'd refetch + re-base64 every time.
+  const fontDataUriCache = new Map();
+  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
+
+  async function fetchAsDataUri(url) {
+    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
+    let dataUri = null;
+    try {
+      const response = await fetch(url, { mode: "cors", credentials: "omit" });
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size <= MAX_FONT_BYTES) {
+          dataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () =>
+              resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+          });
+        }
+      }
+    } catch (_error) {
+      dataUri = null;
+    }
+    fontDataUriCache.set(url, dataUri);
+    return dataUri;
+  }
+
+  function collectFontFaceRuleTexts() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      let cssRules;
+      try {
+        cssRules = sheet.cssRules;
+      } catch (_error) {
+        continue;
+      }
+      if (!cssRules) continue;
+      for (const rule of cssRules) {
+        const cssText = rule.cssText || "";
+        if (cssText.startsWith("@font-face")) rules.push(cssText);
+      }
+    }
+    return rules;
+  }
+
+  async function buildInlinedFontCss() {
+    const ruleTexts = collectFontFaceRuleTexts();
+    if (ruleTexts.length === 0) return null;
+
+    const resolved = ruleTexts.map((cssText) => {
+      if (!SRC_DECLARATION_RE.test(cssText)) return null;
+      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
+      if (!srcMatch) return null;
+      const url = extractFontUrl(srcMatch[1]);
+      if (!url) return null;
+      try {
+        return { cssText, url: new URL(url, document.baseURI).href };
+      } catch (_error) {
+        return null;
+      }
+    });
+
+    const dataUris = await Promise.all(
+      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
+    );
+
+    const inlined = [];
+    let totalBytes = 0;
+    for (let index = 0; index < resolved.length; index += 1) {
+      const entry = resolved[index];
+      const dataUri = dataUris[index];
+      if (!entry || !dataUri) continue;
+      const approxBytes = dataUri.length * 0.75;
+      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
+      totalBytes += approxBytes;
+      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
+    }
+    return inlined.length > 0 ? inlined.join("\n") : null;
+  }
+
+  function stripExternal(clone) {
+    const images = clone.querySelectorAll("img");
+    for (let index = 0; index < images.length; index += 1) {
+      const src = images[index].getAttribute("src");
+      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
+    }
+
+    const elements = clone.querySelectorAll("*");
+    for (let index = 0; index < elements.length; index += 1) {
+      const style = elements[index].style.cssText;
+      if (style && style.includes("url(")) {
+        elements[index].style.cssText = style.replace(
+          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
+          "none",
+        );
+      }
+    }
+  }
+
+  function emitScroll() {
+    scrollRaf = 0;
+    if (!scrollForwarding) return;
+    postToTrustedTop({
+      type: "INLINE_EDIT_SCROLL",
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollForwarding || scrollRaf) return;
+      scrollRaf = requestAnimationFrame(emitScroll);
+    },
+    { passive: true, capture: true },
+  );
+
+  async function handleCaptureRequest(event) {
+    const requestId = event.data.requestId;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function postResult(dataUrl) {
+      postToTrustedTop({
+        type: "INLINE_EDIT_SCREENSHOT_RESULT",
+        requestId,
+        dataUrl,
+        scrollX,
+        scrollY,
+      });
+    }
+
+    try {
+      // Wait for any pending web fonts to resolve so both inline metrics and
+      // the @font-face inlining below see the same loaded faces.
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_error) {}
+      }
+
+      const clone = document.documentElement.cloneNode(true);
+      inlineAll(document.documentElement, clone);
+
+      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
+      for (let index = 0; index < removedNodes.length; index += 1) {
+        removedNodes[index].remove();
+      }
+
+      stripExternal(clone);
+
+      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
+      // can resolve them — external font URLs aren't fetched during
+      // foreignObject rendering, which would otherwise force a fallback face
+      // and change text metrics.
+      const inlinedFontCss = await buildInlinedFontCss();
+      if (inlinedFontCss) {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = inlinedFontCss;
+        const head = clone.querySelector("head");
+        if (head) head.appendChild(styleEl);
+        else clone.insertBefore(styleEl, clone.firstChild);
+      }
+
+      const html = new XMLSerializer().serializeToString(clone);
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+        '<foreignObject width="100%" height="100%">' +
+        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
+        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
+        html +
+        "</div></div></foreignObject></svg>";
+      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      image.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        postResult(canvas.toDataURL("image/png"));
+      };
+      image.onerror = function () {
+        postResult(null);
+      };
+      image.src = svgUrl;
+    } catch (_error) {
+      postResult(null);
+    }
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!event.data) return;
+    // Only accept messages from the direct parent frame. Blocks sibling /
+    // unrelated-window postMessage senders that could otherwise reach us.
+    if (event.source !== window.parent) return;
+
+    const trustedParentOrigin = getTrustedParentOrigin(event);
+    if (!trustedParentOrigin) return;
+    trustedTopOrigin = trustedParentOrigin;
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
+      scrollForwarding = true;
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
+      scrollForwarding = false;
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = 0;
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_BY") {
+      const { deltaX, deltaY, deltaMode } = event.data;
+      if (!scrollForwarding || !Number.isFinite(deltaX) || !Number.isFinite(deltaY)) return;
+      if (deltaMode !== 0 && deltaMode !== 1 && deltaMode !== 2) return;
+      const lineHeight =
+        parseFloat(getComputedStyle(document.documentElement).lineHeight) || DEFAULT_LINE_HEIGHT;
+      const scaleX = deltaMode === 1 ? lineHeight : deltaMode === 2 ? window.innerWidth : 1;
+      const scaleY = deltaMode === 1 ? lineHeight : deltaMode === 2 ? window.innerHeight : 1;
+      // The selection overlay receives the wheel event instead of this iframe.
+      // Instant scrolling preserves trackpad deltas even on smooth-scroll sites.
+      window.scrollBy({ left: deltaX * scaleX, top: deltaY * scaleY, behavior: "instant" });
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
+
+    handleCaptureRequest(event);
+  });
+})();
+
+
+</script></body>
+</html>
